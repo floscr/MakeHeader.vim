@@ -1,5 +1,18 @@
 let g:MakeHeaderColumnWidth = get(g:, 'MakeHeaderColumnWidth', &colorcolumn)
 
+function! s:make_header()
+  " Add comment
+  put=''.getline('.')
+  set virtualedit=all
+  let headerColumnUnpadded = g:MakeHeaderColumnWidth - 2
+  execute 'normal! 0' . headerColumnUnpadded . 'l'
+  execute 'normal vT' . '"' . 'l'
+  silent! normal r-
+  let block_line = getline('.')
+  silent! normal k
+  put!=''.block_line
+endfunction
+
 function! MakeHeader#init(type)
 
   let cursor_position = getpos('.') " Save the current cursor position
@@ -21,17 +34,10 @@ function! MakeHeader#init(type)
       execute 'TComment'
     endif
 
-    " Add comment
-    put=''.getline('.')
-    set virtualedit=all
-    let headerColumnUnpadded = g:MakeHeaderColumnWidth - 2
-    execute 'normal! 0' . headerColumnUnpadded . 'l'
-    execute 'normal vT' . '"' . 'l'
-    silent! normal r-
-    let block_line = getline('.')
-    silent! normal k
-    put!=''.block_line
+    call s:make_header()
 
+    " Set the last cursor position plus 1 line
+    " because 1 line was inserted above
     let cursor_position[1] += 1
 
   endif
