@@ -1,13 +1,12 @@
 let g:MakeHeaderColumnWidth = get(g:, 'MakeHeaderColumnWidth', &colorcolumn)
 
-function! s:make_header()
-  " Add comment
+function! s:make_header(replacement_character, comment_character)
   put=''.getline('.')
   set virtualedit=all
   let headerColumnUnpadded = g:MakeHeaderColumnWidth - 2
   execute 'normal! 0' . headerColumnUnpadded . 'l'
-  execute 'normal vT' . '"' . 'l'
-  silent! normal r-
+  execute 'normal vT' . a:comment_character . 'l'
+  execute 'normal r' . a:replacement_character
   let block_line = getline('.')
   silent! normal k
   put!=''.block_line
@@ -25,21 +24,23 @@ function! MakeHeader#init(type)
     put=''.getline('.')
     silent! normal Vr=k
 
-  " Vimscript
   elseif &filetype == 'vim'
-
     " Turn current line into a comment
     let line_is_comment = matchstr(getline('.'), '"')
     if empty(line_is_comment)
       execute 'TComment'
     endif
+    call s:make_header('-', '"')
+  elseif &filetype == 'html' || &filetype == 'javascript' || &filetype == 'css' || &filetype == 'scss'
+    " Turn current line into a comment
+    let line_is_comment = matchstr(getline('.'), '//')
+    if empty(line_is_comment)
+      execute 'TComment'
+    endif
+    call s:make_header('-', '/')
 
-    call s:make_header()
-
-    " Set the last cursor position plus 1 line
-    " because 1 line was inserted above
+    " Restore the cursor line position after adding 2 lines
     let cursor_position[1] += 1
-
   endif
 
   " Restore virtualedit
