@@ -38,7 +38,6 @@ function! MakeHeader#init(type)
 
   " Restore virtualedit
   let &virtualedit = virtualedit
-  unlet virtualedit
 
   " Restore the previous cursor position
   call setpos('.', cursor_position)
