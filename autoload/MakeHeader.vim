@@ -1,5 +1,11 @@
 let g:MakeHeaderColumnWidth = get(g:, 'MakeHeaderColumnWidth', &colorcolumn)
 
+" Set commenting command to either :TComment or :Commentary
+let s:CommentPluginCommand = 'TComment'
+if !exists(':TComment') && exists(':Commentary')
+  let s:CommentPluginCommand = 'Commentary'
+endif
+
 function! s:make_header(replacement_character, comment_character)
   put=''.getline('.')
   set virtualedit=all
@@ -28,14 +34,14 @@ function! MakeHeader#init(type)
     " Turn current line into a comment
     let line_is_comment = matchstr(getline('.'), '"')
     if empty(line_is_comment)
-      execute 'TComment'
+      execute s:CommentPluginCommand
     endif
     call s:make_header('-', '"')
   elseif &filetype == 'html' || &filetype == 'javascript' || &filetype == 'css' || &filetype == 'scss'
     " Turn current line into a comment
     let line_is_comment = matchstr(getline('.'), '//')
     if empty(line_is_comment)
-      execute 'TComment'
+      execute s:CommentPluginCommand
     endif
     call s:make_header('-', '/')
 
