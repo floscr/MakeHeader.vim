@@ -37,7 +37,7 @@ function! MakeHeader#init(type)
       execute s:CommentPluginCommand
     endif
     call s:make_header('-', '"')
-  elseif &filetype == 'html' || &filetype == 'javascript' || &filetype == 'css' || &filetype == 'scss'
+  elseif &filetype == 'html' || &filetype == 'javascript' || &filetype == 'css' || &filetype == 'scss' || &filetype == 'php'
     " Turn current line into a comment
     let line_is_comment = matchstr(getline('.'), '//')
     if empty(line_is_comment)
